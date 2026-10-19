@@ -42,6 +42,19 @@ describe "Nave de carga" {
 		}
 }
 
+describe "Nave de carga radioactiva" {
+
+		const naveRadioactiva = new NaveDeCargaRadioactiva(carga = 5000, velocidad = 10000)
+
+		test "al recibir una amenaza frena sin liberar la carga y puede sellarse al vacio" {
+			naveRadioactiva.sellarAlVacio()
+			naveRadioactiva.recibirAmenaza()
+			assert.equals(0, naveRadioactiva.velocidad())
+			assert.equals(5000, naveRadioactiva.carga())
+			assert.that(naveRadioactiva.selladaAlVacio())
+		}
+}
+
 describe "Nave de pasajeros" {
 
 		const naveConPasajeros = new NaveDePasajeros(pasajeros = 50, velocidad = 10000)

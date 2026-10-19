@@ -30,6 +30,20 @@ class NaveDeCarga inherits NaveEspacial {
 
 }
 
+class NaveDeCargaRadioactiva inherits NaveDeCarga {
+
+	var property selladaAlVacio = false
+
+	method sellarAlVacio() {
+		selladaAlVacio = true
+	}
+
+	override method recibirAmenaza() {
+		velocidad = 0
+	}
+
+}
+
 class NaveDePasajeros inherits NaveEspacial {
 
 	var property pasajeros = 0
