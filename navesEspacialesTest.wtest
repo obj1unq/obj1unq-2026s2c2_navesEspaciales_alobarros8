@@ -55,6 +55,39 @@ describe "Nave de carga radioactiva" {
 		}
 }
 
+describe "Preparación para el viaje" {
+
+		const naveDePasajeros = new NaveDePasajeros(velocidad = 290000)
+		const naveRadioactiva = new NaveDeCargaRadioactiva()
+		const naveEnAtaque = new NaveDeCombate(estaEnModoAtaque = true)
+		const naveEnReposo = new NaveDeCombate()
+
+		test "aumenta la velocidad de pasajeros sin superar el máximo" {
+			naveDePasajeros.prepararseParaViajar()
+			assert.equals(300000, naveDePasajeros.velocidad())
+		}
+
+		test "sella la nave radioactiva y aumenta su velocidad" {
+			naveRadioactiva.prepararseParaViajar()
+			assert.equals(15000, naveRadioactiva.velocidad())
+			assert.that(naveRadioactiva.selladaAlVacio())
+		}
+
+		test "la nave de combate en ataque anuncia que vuelve a la base" {
+			naveEnAtaque.prepararseParaViajar()
+			assert.equals("Volviendo a la base", naveEnAtaque.ultimoMensaje())
+			assert.equals(15000, naveEnAtaque.velocidad())
+			assert.that(naveEnAtaque.estaEnModoAtaque())
+		}
+
+		test "la nave de combate en reposo sale en mision y activa el modo ataque" {
+			naveEnReposo.prepararseParaViajar()
+			assert.equals("Saliendo en misión", naveEnReposo.ultimoMensaje())
+			assert.equals(15000, naveEnReposo.velocidad())
+			assert.that(naveEnReposo.estaEnModoAtaque())
+		}
+}
+
 describe "Nave de pasajeros" {
 
 		const naveConPasajeros = new NaveDePasajeros(pasajeros = 50, velocidad = 10000)

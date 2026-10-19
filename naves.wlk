@@ -2,8 +2,16 @@ class NaveEspacial {
 
 	var property velocidad = 0
 
+	method aumentarVelocidad(cantidad) {
+		velocidad = if (velocidad + cantidad > 300000) 300000 else velocidad + cantidad
+	}
+
 	method propulsarse() {
-		velocidad = if (velocidad + 20000 > 300000) 300000 else velocidad + 20000
+		self.aumentarVelocidad(20000)
+	}
+
+	method prepararseParaViajar() {
+		self.aumentarVelocidad(15000)
 	}
 
 }
@@ -36,6 +44,11 @@ class NaveDeCargaRadioactiva inherits NaveDeCarga {
 
 	method sellarAlVacio() {
 		selladaAlVacio = true
+	}
+
+	override method prepararseParaViajar() {
+		self.aumentarVelocidad(15000)
+		self.sellarAlVacio()
 	}
 
 	override method recibirAmenaza() {
@@ -72,6 +85,16 @@ class NaveDeCombate inherits NaveEspacial {
 	method ultimoMensaje() = mensajesEmitidos.last()
 
 	method estaInvisible() = velocidad < 10000 and estaEnModoAtaque
+
+	override method prepararseParaViajar() {
+		self.aumentarVelocidad(15000)
+		if (estaEnModoAtaque) {
+			self.emitirMensaje("Volviendo a la base")
+		} else {
+			self.emitirMensaje("Saliendo en misión")
+			estaEnModoAtaque = true
+		}
+	}
 
 	method recibirAmenaza() {
 		if (estaEnModoAtaque) {
