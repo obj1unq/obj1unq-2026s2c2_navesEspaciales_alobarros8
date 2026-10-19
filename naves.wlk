@@ -82,33 +82,34 @@ class NaveDePasajeros inherits NaveEspacial {
 
 class NaveDeCombate inherits NaveEspacial {
 
-	var property estaEnModoAtaque = false
+	//var property estaEnModoAtaque = false
 	const property mensajesEmitidos = []
-
+	var property modo = reposo
 	method emitirMensaje(mensaje) {
 		mensajesEmitidos.add(mensaje)
 	}
-
+	method estaEnModoAtaque() = modo == "ataque"
 	method ultimoMensaje() = mensajesEmitidos.last()
 
-	method estaInvisible() = velocidad < 10000 and estaEnModoAtaque
+	method estaInvisible() = velocidad < 10000 and self.estaEnModoAtaque()
 
 	override method prepararseParaViajar() {
-		self.aumentarVelocidad(15000)
-		if (estaEnModoAtaque) {
-			self.emitirMensaje("Volviendo a la base")
-		} else {
-			self.emitirMensaje("Saliendo en misión")
-			estaEnModoAtaque = true
-		}
+		super()
+		modo.recibirAmenaza(self)
 	}
 
 	override method recibirAmenaza() {
-		if (estaEnModoAtaque) {
-			self.emitirMensaje("Enemigo encontrado")
-		} else {
-			self.emitirMensaje("¡RETIRADA!")
-		}
+		modo.recibirAmenaza(self)
 	}
 
+}
+
+object ataque {
+  	method prepararseParaViajar(nave) = nave.emitirMensaje("Volviendo a la base")
+	method recibirAmenaza(nave) = nave.emitirMensaje("Enemigo encontrado")
+}
+
+object reposo {
+  method prepararseParaViajar(nave) {return nave.emitirMensaje("Saliendo en mision")  nave.modo(ataque)}
+  method recibirAmenaza(nave) = nave.emitirMensaje("Retirada!")
 }

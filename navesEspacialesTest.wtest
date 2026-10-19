@@ -59,7 +59,7 @@ describe "Preparación para el viaje" {
 
 		const naveDePasajeros = new NaveDePasajeros(velocidad = 290000)
 		const naveRadioactiva = new NaveDeCargaRadioactiva()
-		const naveEnAtaque = new NaveDeCombate(estaEnModoAtaque = true)
+		const naveEnAtaque = new NaveDeCombate(modo = ataque)
 		const naveEnReposo = new NaveDeCombate()
 
 		test "aumenta la velocidad de pasajeros sin superar el máximo" {
@@ -93,7 +93,7 @@ describe "Enfrentar enemigo" {
 		const naveDePasajeros = new NaveDePasajeros()
 		const naveDeCarga = new NaveDeCarga(carga = 5000)
 		const naveRadioactiva = new NaveDeCargaRadioactiva(carga = 5000)
-		const naveDeCombate = new NaveDeCombate(estaEnModoAtaque = true)
+		const naveDeCombate = new NaveDeCombate(modo = ataque)
 
 		test "la nave de pasajeros activa la alarma y se propulsa" {
 			naveDePasajeros.enfrentarEnemigo()
@@ -148,8 +148,8 @@ describe "Nave de pasajeros" {
 
 describe "Nave de combate" {
 
-		const naveEnAtaque = new NaveDeCombate(estaEnModoAtaque = true, velocidad = 8000)
-		const naveEnReposo = new NaveDeCombate(estaEnModoAtaque = false, velocidad = 8000)
+		const naveEnAtaque = new NaveDeCombate(modo = ataque, velocidad = 8000)
+		const naveEnReposo = new NaveDeCombate(modo = reposo, velocidad = 8000)
 
 		test "es invisible en modo ataque por debajo de diez mil kms por segundo" {
 			assert.that(naveEnAtaque.estaInvisible())
