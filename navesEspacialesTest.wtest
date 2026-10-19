@@ -88,6 +88,38 @@ describe "Preparación para el viaje" {
 		}
 }
 
+describe "Enfrentar enemigo" {
+
+		const naveDePasajeros = new NaveDePasajeros()
+		const naveDeCarga = new NaveDeCarga(carga = 5000)
+		const naveRadioactiva = new NaveDeCargaRadioactiva(carga = 5000)
+		const naveDeCombate = new NaveDeCombate(estaEnModoAtaque = true)
+
+		test "la nave de pasajeros activa la alarma y se propulsa" {
+			naveDePasajeros.enfrentarEnemigo()
+			assert.that(naveDePasajeros.alarmaDeEmergencia())
+			assert.equals(20000, naveDePasajeros.velocidad())
+		}
+
+		test "la nave de carga libera su carga y se propulsa" {
+			naveDeCarga.enfrentarEnemigo()
+			assert.equals(0, naveDeCarga.carga())
+			assert.equals(20000, naveDeCarga.velocidad())
+		}
+
+		test "la nave radioactiva conserva su carga y se propulsa luego de frenar" {
+			naveRadioactiva.enfrentarEnemigo()
+			assert.equals(5000, naveRadioactiva.carga())
+			assert.equals(20000, naveRadioactiva.velocidad())
+		}
+
+		test "la nave de combate emite su mensaje y se propulsa" {
+			naveDeCombate.enfrentarEnemigo()
+			assert.equals("Enemigo encontrado", naveDeCombate.ultimoMensaje())
+			assert.equals(20000, naveDeCombate.velocidad())
+		}
+}
+
 describe "Nave de pasajeros" {
 
 		const naveConPasajeros = new NaveDePasajeros(pasajeros = 50, velocidad = 10000)

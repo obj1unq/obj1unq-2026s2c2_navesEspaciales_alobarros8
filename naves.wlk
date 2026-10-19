@@ -10,6 +10,13 @@ class NaveEspacial {
 		self.aumentarVelocidad(20000)
 	}
 
+	method enfrentarEnemigo() {
+		self.recibirAmenaza()
+		self.propulsarse()
+	}
+
+	method recibirAmenaza()
+
 	method prepararseParaViajar() {
 		self.aumentarVelocidad(15000)
 	}
@@ -26,7 +33,7 @@ class NaveDeCarga inherits NaveEspacial {
 
 	method estaEnFalta() = self.estaSobrecargada() and self.estaExcedidaDeVelocidad()
 
-	method recibirAmenaza() {
+	override method recibirAmenaza() {
 		carga = 0
 	}
 
@@ -67,7 +74,7 @@ class NaveDePasajeros inherits NaveEspacial {
 
 	method estaEnPeligro() = velocidad > self.velocidadMaximaLegal() or alarmaDeEmergencia
 
-	method recibirAmenaza() {
+	override method recibirAmenaza() {
 		alarmaDeEmergencia = true
 	}
 
@@ -96,7 +103,7 @@ class NaveDeCombate inherits NaveEspacial {
 		}
 	}
 
-	method recibirAmenaza() {
+	override method recibirAmenaza() {
 		if (estaEnModoAtaque) {
 			self.emitirMensaje("Enemigo encontrado")
 		} else {
