@@ -2,6 +2,10 @@ class NaveEspacial {
 
 	var property velocidad = 0
 
+	method propulsarse() {
+		velocidad = if (velocidad + 20000 > 300000) 300000 else velocidad + 20000
+	}
+
 }
 
 class NaveDeCarga inherits NaveEspacial {

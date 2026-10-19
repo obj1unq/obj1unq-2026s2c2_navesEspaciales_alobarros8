@@ -1,5 +1,21 @@
 import naves.*
 
+describe "Propulsión" {
+
+		const naveDeCarga = new NaveDeCarga()
+		const naveDePasajeros = new NaveDePasajeros(velocidad = 290000)
+
+		test "una nave de carga aumenta su velocidad al propulsarse" {
+			naveDeCarga.propulsarse()
+			assert.equals(20000, naveDeCarga.velocidad())
+		}
+
+		test "una nave de pasajeros no supera la velocidad máxima al propulsarse" {
+			naveDePasajeros.propulsarse()
+			assert.equals(300000, naveDePasajeros.velocidad())
+		}
+}
+
 describe "Nave de carga" {
 
 		const naveEnFalta = new NaveDeCarga(carga = 120000, velocidad = 110000)
