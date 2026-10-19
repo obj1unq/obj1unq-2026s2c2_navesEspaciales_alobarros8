@@ -2,96 +2,72 @@ import naves.*
 
 describe "Nave de carga" {
 
-	const naveVacia = new NaveDeCarga()
-	const naveLlena = new NaveDeCarga(carga = 500000, velocidad = 290000)
+		const naveEnFalta = new NaveDeCarga(carga = 120000, velocidad = 110000)
+		const naveParaAmenaza = new NaveDeCarga(carga = 120000, velocidad = 110000)
+		const naveEnRegla = new NaveDeCarga(carga = 100000, velocidad = 110000)
 
-	test "sobrecargada" {
-		assert.that(naveLlena.sobrecargada())
-	}
+		test "detecta sobrecarga y exceso de velocidad" {
+			assert.that(naveEnFalta.estaSobrecargada())
+			assert.that(naveEnFalta.estaExcedidaDeVelocidad())
+			assert.that(naveEnFalta.estaEnFalta())
+		}
 
-	test "no sobrecargada" {
-		assert.notThat(naveVacia.sobrecargada())
-	}
+		test "amenaza vacia la carga" {
+			naveParaAmenaza.recibirAmenaza()
+			assert.equals(0, naveParaAmenaza.carga())
+			assert.notThat(naveParaAmenaza.estaSobrecargada())
+		}
 
-	test "excedida de velocidad" {
-		assert.that(naveLlena.excedidaDeVelocidad())
-	}
-
-	test "no excedida de velocidad" {
-		assert.notThat(naveVacia.excedidaDeVelocidad())
-	}
-
-	test "recibir amenaza" {
-		naveLlena.recibirAmenaza()
-		assert.equals(0, naveLlena.carga())
-	}
-	
-	test "acercamiento a control de nave en falta" {
-		naveLlena.acercamientoDeControl()
-		assert.equals(0, naveLlena.carga())
-	}
-	
-	test "acercamiento a control de nave en regla" {
-		naveLlena.carga(100)
-		naveLlena.acercamientoDeControl()
-		assert.equals(100, naveLlena.carga())
-	}
-
+		test "el control solo amenaza a una nave en falta" {
+			naveEnFalta.recibirControl()
+			naveEnRegla.recibirControl()
+			assert.equals(0, naveEnFalta.carga())
+			assert.equals(100000, naveEnRegla.carga())
+		}
 }
 
 describe "Nave de pasajeros" {
 
-	const naveSinPasajeros = new NaveDePasajeros()
-	const naveConPasajeros = new NaveDePasajeros(cantidadDePasajeros = 296, velocidad = 290000)
+		const naveConPasajeros = new NaveDePasajeros(pasajeros = 50, velocidad = 10000)
+		const naveParaAmenaza = new NaveDePasajeros(pasajeros = 50, velocidad = 5000)
+		const naveConMuchosPasajeros = new NaveDePasajeros(pasajeros = 101)
 
-	test "velocidad maxima sin pasajeros" {
-		assert.equals(75000, naveSinPasajeros.velocidadMaximaPermitida())
-	}
+		test "calcula la velocidad maxima legal" {
+			assert.equals(300000 / 54, naveConPasajeros.velocidadMaximaLegal())
+		}
 
-	test "velocidad maxima con pasajeros" {
-		assert.equals(1000 - 200, naveConPasajeros.velocidadMaximaPermitida())
-	}
+		test "a diez mil kms por segundo esta en peligro" {
+			assert.that(naveConPasajeros.estaEnPeligro())
+		}
 
-	test "esta en peligro" {
-		assert.that(naveConPasajeros.estaEnPeligro())
-	}
+		test "descuenta velocidad por seguridad cuando supera cien pasajeros" {
+			assert.equals(300000 / 105 - 200, naveConMuchosPasajeros.velocidadMaximaLegal())
+		}
 
-	test "no esta en peligro" {
-		assert.notThat(naveSinPasajeros.estaEnPeligro())
-	}
-
-	test "recibir amenaza" {
-		naveSinPasajeros.recibirAmenaza()
-		assert.that(naveSinPasajeros.alarma())
-	}
-
+		test "la amenaza activa la alarma y pone a la nave en peligro" {
+			assert.notThat(naveParaAmenaza.estaEnPeligro())
+			naveParaAmenaza.recibirAmenaza()
+			assert.that(naveParaAmenaza.alarmaDeEmergencia())
+			assert.that(naveParaAmenaza.estaEnPeligro())
+		}
 }
 
 describe "Nave de combate" {
 
-	const naveEnReposo = new NaveDeCombate()
-	const naveEnAtaque = new NaveDeCombate(modo = ataque)
+		const naveEnAtaque = new NaveDeCombate(estaEnModoAtaque = true, velocidad = 8000)
+		const naveEnReposo = new NaveDeCombate(estaEnModoAtaque = false, velocidad = 8000)
 
-	test "no esta invisible en reposo" {
-		assert.notThat(naveEnReposo.estaInvisible())
-	}
+		test "es invisible en modo ataque por debajo de diez mil kms por segundo" {
+			assert.that(naveEnAtaque.estaInvisible())
+		}
 
-	test "esta invisible en ataque" {
-		assert.that(naveEnAtaque.estaInvisible())
-	}
+		test "amenaza en modo ataque emite el mensaje correspondiente" {
+			naveEnAtaque.recibirAmenaza()
+			assert.equals("Enemigo encontrado", naveEnAtaque.ultimoMensaje())
+		}
 
-	test "no esta invisible en ataque" {
-		naveEnAtaque.velocidad(20000)
-		assert.notThat(naveEnAtaque.estaInvisible())
-	}
-
-	test "recibir amenaza en reposo" {
-		naveEnReposo.recibirAmenaza()
-		assert.equals("¡RETIRADA!", naveEnReposo.ultimoMensaje())
-	}
-
-	test "recibir amenaza en ataque" {
-		naveEnAtaque.recibirAmenaza()
-		assert.equals("Enemigo encontrado", naveEnAtaque.ultimoMensaje())
+		test "amenaza en reposo emite retirada" {
+			naveEnReposo.recibirAmenaza()
+			assert.equals("¡RETIRADA!", naveEnReposo.ultimoMensaje())
 	}
 }

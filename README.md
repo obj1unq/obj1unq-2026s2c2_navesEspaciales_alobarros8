@@ -16,6 +16,8 @@ De las naves conocemos su velocidad, medida en _kms/seg_; y, por ahora, nos pidi
 
 Analizar si el código predeterminado debe reestructurarse mediante alguna herencia. En caso que si, modificarlo y justificar.
 
+Se incorpora `NaveEspacial` como superclase porque todas las naves comparten la velocidad. Así, ese atributo se define una sola vez y las subclases heredan ese estado común. Las tres clases concretas implementan `recibirAmenaza()` con su propio comportamiento, de modo que el protocolo puede invocarse polimórficamente sin duplicar la velocidad ni preguntar por el tipo de nave.
+
 ## 2. Propulsión
 
 Al código predeterminado se le debe incorporar la función que permite que todas las naves se puedan _propulsar_. Esto aumenta su velocidad en 20.000 kms/seg, pero nunca puede superar los 300.000 kms/seg, siendo este su máximo alcanzable.

@@ -1,79 +1,66 @@
-class NaveDeCarga {
+class NaveEspacial {
 
 	var property velocidad = 0
+
+}
+
+class NaveDeCarga inherits NaveEspacial {
+
 	var property carga = 0
 
-	method sobrecargada() = carga > 100000
+	method estaSobrecargada() = carga > 100000
 
-	method excedidaDeVelocidad() = velocidad > 100000
+	method estaExcedidaDeVelocidad() = velocidad > 100000
+
+	method estaEnFalta() = self.estaSobrecargada() and self.estaExcedidaDeVelocidad()
 
 	method recibirAmenaza() {
 		carga = 0
 	}
-	
-	method enFalta() = self.sobrecargada() and self.excedidaDeVelocidad()
-	
-	method acercamientoDeControl() {
-		if (self.enFalta()) {
+
+	method recibirControl() {
+		if (self.estaEnFalta()) {
 			self.recibirAmenaza()
 		}
 	}
 
 }
 
-class NaveDePasajeros {
+class NaveDePasajeros inherits NaveEspacial {
 
-	var property velocidad = 0
-	var property alarma = false
-	const cantidadDePasajeros = 0
+	var property pasajeros = 0
+	var property tripulacion = 4
+	var property alarmaDeEmergencia = false
 
-	method tripulacion() = cantidadDePasajeros + 4
+	method velocidadMaximaLegal() = 300000 / (pasajeros + tripulacion) - if (pasajeros > 100) 200 else 0
 
-	method velocidadMaximaPermitida() = 300000 / self.tripulacion() - if (cantidadDePasajeros > 100) 200 else 0
-
-	method estaEnPeligro() = velocidad > self.velocidadMaximaPermitida() or alarma
+	method estaEnPeligro() = velocidad > self.velocidadMaximaLegal() or alarmaDeEmergencia
 
 	method recibirAmenaza() {
-		alarma = true
+		alarmaDeEmergencia = true
 	}
 
 }
 
-class NaveDeCombate {
-	var property velocidad = 0
-	var property modo = reposo
+class NaveDeCombate inherits NaveEspacial {
+
+	var property estaEnModoAtaque = false
 	const property mensajesEmitidos = []
 
 	method emitirMensaje(mensaje) {
 		mensajesEmitidos.add(mensaje)
 	}
-	
+
 	method ultimoMensaje() = mensajesEmitidos.last()
 
-	method estaInvisible() = velocidad < 10000 and modo.invisible()
+	method estaInvisible() = velocidad < 10000 and estaEnModoAtaque
 
 	method recibirAmenaza() {
-		modo.recibirAmenaza(self)
-	}
-
-}
-
-object reposo {
-
-	method invisible() = false
-
-	method recibirAmenaza(nave) {
-		nave.emitirMensaje("¡RETIRADA!")
-	}
-
-}
-
-object ataque {
-
-	method invisible() = true
-
-	method recibirAmenaza(nave) {
-		nave.emitirMensaje("Enemigo encontrado")
+		if (estaEnModoAtaque) {
+			self.emitirMensaje("Enemigo encontrado")
+		} else {
+			self.emitirMensaje("¡RETIRADA!")
+		}
 	}
 
 }
